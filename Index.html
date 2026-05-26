@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario Impact Analysis — Matcha & CO</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9f8f5; color: #1a1a18; min-height: 100vh; padding: 2rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .meta { font-size: 12px; color: #73726c; margin-bottom: 1.25rem; }
+  .section { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 10px; padding: 1.125rem 1.375rem; margin-bottom: 1rem; }
+  .sec-title { font-size: 11px; font-weight: 500; color: #73726c; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .875rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .kpi { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 10px; padding: .875rem 1rem; }
+  .kpi-label { font-size: 11px; color: #73726c; margin-bottom: 5px; line-height: 1.3; }
+  .kpi-value { font-size: 22px; font-weight: 500; color: #1a1a18; line-height: 1.1; }
+  .kpi-sub { font-size: 11px; color: #73726c; margin-top: 3px; }
+  .kpi-delta { font-size: 13px; font-weight: 500; color: #3B6D11; margin-top: 3px; }
+  .legend { display: flex; gap: 16px; margin-bottom: 8px; font-size: 12px; color: #73726c; flex-wrap: wrap; }
+  .ldot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+  .chart-wrap { position: relative; width: 100%; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart-sub { font-size: 11px; color: #73726c; margin-bottom: 6px; }
+  .analysis { margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #e0dfd8; font-size: 12px; color: #73726c; line-height: 1.6; }
+  .analysis strong { color: #1a1a18; font-weight: 500; }
+  .q-row { display: flex; gap: 12px; padding: 9px 0; border-bottom: 0.5px solid #e0dfd8; align-items: flex-start; }
+  .q-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .q-num { font-size: 11px; font-weight: 500; color: #7F77DD; min-width: 18px; padding-top: 2px; }
+  .q-text { font-size: 13px; color: #1a1a18; line-height: 1.6; }
+  .c-row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid #e0dfd8; align-items: flex-start; font-size: 13px; color: #73726c; line-height: 1.6; }
+  .c-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .c-dot { color: #7F77DD; font-size: 18px; line-height: 1.2; min-width: 12px; }
+  .c-row strong { color: #1a1a18; font-weight: 500; }
+  .insight { background: #f2f1f9; border-left: 3px solid #7F77DD; border-radius: 8px; padding: .875rem 1.125rem; font-size: 13px; color: #444441; line-height: 1.7; margin-top: 0; }
+  .insight strong { color: #1a1a18; font-weight: 500; }
+  @media (max-width: 640px) { .kpi-grid { grid-template-columns: 1fr 1fr; } .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <p class="meta">Cohorte: primer pedido 10 dic 2025 – 31 ene 2026 &nbsp;·&nbsp; 5 meses de seguimiento &nbsp;·&nbsp; calendar_owner n=3,213 &nbsp;·&nbsp; control n=11,980</p>
+
+  <div class="section">
+    <div class="sec-title">Preguntas clave de research</div>
+    <div class="q-row"><span class="q-num">01</span><span class="q-text">¿Los calendar owners generan más valor real a largo plazo, o el gap de LTV es un artefacto del precio inicial del calendario?</span></div>
+    <div class="q-row"><span class="q-num">02</span><span class="q-text">¿El calendario ha creado un comportamiento de compra repetida significativamente diferente?</span></div>
+    <div class="q-row"><span class="q-num">03</span><span class="q-text">¿Merece la pena escalar el calendario como palanca de fidelización?</span></div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">LTV mes 5</div>
+      <div class="kpi-value">€65.9</div>
+      <div class="kpi-sub">vs €43.0 control</div>
+      <div class="kpi-delta">+53% ↑</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Retención mensual media</div>
+      <div class="kpi-value">6.6%</div>
+      <div class="kpi-sub">vs 4.1% control</div>
+      <div class="kpi-delta">+61% ↑</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Frecuencia — tasa 2º pedido</div>
+      <div class="kpi-value">23%</div>
+      <div class="kpi-sub">vs 15% control</div>
+      <div class="kpi-delta">+50% ↑</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">AOV primer pedido</div>
+      <div class="kpi-value">€52.4</div>
+      <div class="kpi-sub">vs €34.6 control</div>
+      <div class="kpi-delta">+51% ↑</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">LTV acumulado</div>
+    <div class="legend">
+      <span><span class="ldot" style="background:#7F77DD"></span>Calendar owner</span>
+      <span><span class="ldot" style="background:#888780"></span>Not calendar owner</span>
+    </div>
+    <div class="chart-wrap" style="height:240px">
+      <canvas id="ltvChart"></canvas>
+    </div>
+    <div class="analysis">La brecha se mantiene constante mes a mes (+€18–23) y no converge a 5 meses. El gap podría ampliarse a medida que los calendar owners continúen con su mayor frecuencia de compra.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Retención</div>
+    <div class="two-col">
+      <div>
+        <p class="chart-sub">Tasa mensual</p>
+        <div class="legend">
+          <span><span class="ldot" style="background:#7F77DD"></span>Calendar</span>
+          <span><span class="ldot" style="background:#888780"></span>Control</span>
+        </div>
+        <div class="chart-wrap" style="height:190px">
+          <canvas id="retChart"></canvas>
+        </div>
+      </div>
+      <div>
+        <p class="chart-sub">Acumulada (eventos de compra de repetición)</p>
+        <div class="legend">
+          <span><span class="ldot" style="background:#7F77DD"></span>Calendar</span>
+          <span><span class="ldot" style="background:#888780"></span>Control</span>
+        </div>
+        <div class="chart-wrap" style="height:190px">
+          <canvas id="retCumChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="analysis">Pico compartido en mes 2 para ambos grupos. A mes 5, los calendar owners acumulan <strong>32.9%</strong> de eventos de compra de repetición vs <strong>20.4%</strong> del control. El gap mensual no se cierra en ningún mes del seguimiento.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Progresión de pedidos</div>
+    <div class="legend">
+      <span><span class="ldot" style="background:#7F77DD"></span>Calendar</span>
+      <span><span class="ldot" style="background:#888780"></span>Control</span>
+    </div>
+    <div class="chart-wrap" style="height:200px">
+      <canvas id="orderChart"></canvas>
+    </div>
+    <div class="analysis">El drop entre 2º y 3º pedido es más pronunciado en control (−71%) que en calendario (−65%). A cada escalón, la ventaja relativa del calendario aumenta — el efecto compounding es real.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">AOV por mes (ticket medio)</div>
+    <div class="legend">
+      <span><span class="ldot" style="background:#7F77DD"></span>Calendar owner</span>
+      <span><span class="ldot" style="background:#888780"></span>Not calendar owner</span>
+    </div>
+    <div class="chart-wrap" style="height:200px">
+      <canvas id="aovChart"></canvas>
+    </div>
+    <div class="analysis">La convergencia desde mes 2 es la prueba clave: el LTV superior no es un artefacto del precio del calendario. A partir de la segunda compra, ambos grupos gastan lo mismo (~€40). El gap de LTV es pura frecuencia.</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Hallazgos y decisiones clave</div>
+    <div class="c-row"><span class="c-dot">·</span><span>LTV +53% a 5 meses (€65.9 vs €43.0), con una brecha estable que no converge.</span></div>
+    <div class="c-row"><span class="c-dot">·</span><span>El driver es frecuencia, no ticket. Desde mes 2, el AOV es similar en ambos grupos (~€40).</span></div>
+    <div class="c-row"><span class="c-dot">·</span><span>Doble probabilidad de llegar al 3º pedido (8.1% vs 4.4%) y triple al 4º (3.5% vs 1.3%). El efecto se amplifica en cada pedido adicional.</span></div>
+    <div class="c-row"><span class="c-dot">·</span><span>Retención mensual 1.5–2x mayor en todos los meses, sin señales de deterioro a 5 meses.</span></div>
+    <div class="c-row"><span class="c-dot">·</span><span><strong>Decisión:</strong> el calendario funciona como palanca de fidelización. Justifica evaluar escalarlo o replicar su mecánica (oferta mensual desbloqueada) en otros formatos.</span></div>
+  </div>
+
+  <div class="insight"><strong>La diferencia de LTV no es solo el precio del calendario.</strong> Desde el mes 2, el AOV de ambos grupos converge (~€40). El gap de +53% en LTV está impulsado por <strong>frecuencia de compra</strong>: los calendar owners tienen un 84% más de probabilidades de hacer un 3º pedido y casi el triple para el 4º (3.5% vs 1.3%). El calendario creó clientes que vuelven más, no clientes que gastan más por pedido.</div>
+
+</div>
+<script>
+const cal='#7F77DD',ctrl='#888780',grid='rgba(0,0,0,0.07)';
+const tf={font:{size:11}};
+const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:grid},ticks:tf},x:{grid:{display:false},ticks:{...tf,autoSkip:false}}}};
+const lbl6=['Primer pedido','Mes 1','Mes 2','Mes 3','Mes 4','Mes 5'];
+const lbl5=['Mes 1','Mes 2','Mes 3','Mes 4','Mes 5'];
+
+new Chart(document.getElementById('ltvChart'),{type:'line',data:{labels:lbl6,datasets:[
+  {label:'Calendar',data:[52.4,53.7,57.0,60.1,62.8,65.9],borderColor:cal,backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2,borderDash:[]},
+  {label:'Control',data:[34.6,35.2,37.5,39.7,41.6,43.0],borderColor:ctrl,backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2,borderDash:[5,3]}
+]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,min:28,ticks:{callback:v=>'€'+v.toFixed(0),font:{size:11}}}}}});
+
+new Chart(document.getElementById('retChart'),{type:'bar',data:{labels:lbl5,datasets:[
+  {label:'Calendar',data:[3.0,8.5,7.5,6.7,7.2],backgroundColor:cal,borderRadius:3},
+  {label:'Control',data:[1.9,5.4,5.3,4.5,3.3],backgroundColor:ctrl,borderRadius:3}
+]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{callback:v=>v.toFixed(1)+'%',font:{size:11}}}}}});
+
+new Chart(document.getElementById('retCumChart'),{type:'line',data:{labels:lbl5,datasets:[
+  {label:'Calendar',data:[3.0,11.5,19.0,25.7,32.9],borderColor:cal,backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2,borderDash:[]},
+  {label:'Control',data:[1.9,7.3,12.6,17.1,20.4],borderColor:ctrl,backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2,borderDash:[5,3]}
+]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,min:0,ticks:{callback:v=>v.toFixed(0)+'%',font:{size:11}}}}}});
+
+new Chart(document.getElementById('orderChart'),{type:'bar',data:{labels:['2º pedido','3º pedido','4º pedido','5º pedido'],datasets:[
+  {label:'Calendar',data:[23.0,8.1,3.5,1.3],backgroundColor:cal,borderRadius:3},
+  {label:'Control',data:[15.3,4.4,1.3,0.7],backgroundColor:ctrl,borderRadius:3}
+]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{callback:v=>v.toFixed(0)+'%',font:{size:11}}}}}});
+
+new Chart(document.getElementById('aovChart'),{type:'line',data:{labels:lbl6,datasets:[
+  {label:'Calendar',data:[52.4,52.0,37.6,39.6,38.7,41.8],borderColor:cal,backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2,borderDash:[]},
+  {label:'Control',data:[34.6,34.5,39.6,39.3,40.3,41.0],borderColor:ctrl,backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2,borderDash:[5,3]}
+]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,min:28,ticks:{callback:v=>'€'+v.toFixed(0),font:{size:11}}}}}});
+</script>
+</body>
+</html>
